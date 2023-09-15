@@ -1,0 +1,256 @@
+﻿@model List<WebQLDA.Models.DuAn>
+<!-- Định nghĩa kiểu dữ liệu của model -->
+@{
+    ViewData["Title"] = "Danh sách dự án";
+}
+
+<div class="text-center">
+    <h1 class="display-4">MANAGER PROJECT</h1>
+    <button id="createProjectButton" class="btn btn-primary">Tạo Dự Án</button>
+    <button id="createTaskButton" class="btn btn-success">Tạo Công Việc</button>
+    <!-- Modal cho Tạo Dự Án -->
+    <div class="modal" id="createProjectModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tạo Dự Án Mới</h4>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="CreateDuAn" method="post">
+                        <div class="form-group">
+                            <label for="tenDuAn">Tên Dự Án:</label>
+                            <input type="text" class="form-control" id="tenDuAn" name="tenDuAn" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ngayBatDau">Ngày Bắt Đầu:</label>
+                            <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ngayKetThuc">Ngày Kết Thúc:</label>
+                            <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="trangThai">Trạng Thái:</label>
+                            <input type="text" class="form-control" id="trangThai" name="TrangThai" maxlength="20" required>
+                           
+                        </div>
+
+
+                        <div class="text-center">
+                            <button id="createProjectSubmitButton" type="submit" class="btn btn-primary">Tạo Dự Án</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="closeProjectModalButton" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal cho Tạo Công Việc -->
+    <div class="modal" id="createTaskModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tạo Công Việc Mới</h4>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="CreateCongViec" method="post">
+                        <div class="form-group">
+                            <label for="MaDuAn">Chọn Dự Án:</label>
+                            <input type="hidden" id="MaDuAnInput" name="MaDuAn" value="">
+                            <select class="form-control" id="MaDuAn" name="MaDuAn" required>
+                                <option value="">Chọn một dự án</option>
+                                @foreach (var DuAn in ViewBag.DuAn)
+                                {
+                                    <option value="@DuAn.MaDuAn">@DuAn.TenDuAn</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tenCongViec">Tên Công Việc:</label>
+                            <input type="text" class="form-control" id="tenCongViec" name="tenCongViec" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="moTa">Mô Tả:</label>
+                            <textarea class="form-control" id="moTa" name="moTa"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ngayHetHan">Ngày Hết Hạn:</label>
+                            <input type="date" class="form-control" id="ngayHetHan" name="ngayHetHan" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="trangThai">Trạng Thái:</label>
+                            <input type="text" class="form-control" id="TrangThai" name="TrangThai" maxlength="10" required>
+                        </div>
+
+
+                        <button type="submit" class="btn btn-primary" id="saveTaskButton">Tạo Công Việc</button>
+
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="closeTaskModalButton" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <h1 class="display-4">Danh sách dự án</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tên Dự Án</th>
+                    <th>Ngày Bắt Đầu</th>
+                    <th>Ngày Kết Thúc</th>
+                    <th>Trạng Thái</th>
+                    <th>Công Việc</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var DuAn in Model)
+                {
+                    <tr>
+                        <td>@DuAn.TenDuAn</td>
+                        <td>@DuAn.NgayBatDau.ToShortDateString()</td>
+                        <td>@DuAn.NgayKetThuc.ToShortDateString()</td>
+                        <td>@DuAn.TrangThai</td>
+                        <td>
+                            @if (DuAn.CongViec != null && DuAn.CongViec.Any())
+                            {
+                                <a href="@Url.Action("DanhSachCongViec", "Home", new { id = DuAn.MaDuAn })" class="btn btn-primary">Xem Công Việc</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Xử lý sự kiện khi nhấp vào nút "Tạo Dự Án"
+            $("#createProjectButton").click(function () {
+                // Mở modal tạo dự án
+                $("#createProjectModal").modal("show");
+            });
+
+            // Xử lý sự kiện khi nhấp vào nút "Tạo Dự Án" trong modal
+            $("#createProjectSubmitButton").click(function () {
+                // Lấy dữ liệu từ các trường input trong form
+                var tenDuAn = $("#tenDuAn").val();
+                var ngayBatDau = $("#ngayBatDau").val();
+                var ngayKetThuc = $("#ngayKetThuc").val();
+                var trangThai = $("#trangThai").val();
+
+                // Tạo đối tượng JSON chứa dữ liệu dự án
+                var duAnData = {
+                    TenDuAn: tenDuAn,
+                    NgayBatDau: ngayBatDau,
+                    NgayKetThuc: ngayKetThuc,
+                    TrangThai: trangThai
+                };
+
+                // Thực hiện yêu cầu AJAX POST lên máy chủ
+                $.ajax({
+                    url: "/Home/CreateDuAn",
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify(duAnData),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        if (result.success) {
+                            // Đóng modal tạo dự án sau khi tạo thành công
+                            $("#createProjectModal").modal("hide");
+                        } else {
+                            alert(result.message); // Hiển thị thông báo lỗi
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert("Có lỗi xảy ra khi tạo dự án.");
+                    }
+                });
+                return false;
+            });
+
+
+
+            // Xử lý sự kiện khi nhấp vào nút "Đóng" trong modal "Tạo Dự Án"
+            $("#closeProjectModalButton").click(function () {
+                $("#createProjectModal").modal("hide"); // Đóng modal tạo dự án
+            });
+
+            // Xử lý sự kiện khi nhấp vào nút "Tạo Công Việc"
+            $("#createTaskButton").click(function () {
+                $("#createTaskModal").modal("show"); // Hiển thị modal tạo công việc
+            });
+
+            // Xử lý sự kiện khi nhấp vào nút "Đóng" trong modal "Công Việc Mới"
+            $("#closeTaskModalButton").click(function () {
+                $("#createTaskModal").modal("hide"); // Đóng modal tạo công việc
+            });
+
+            // Xử lý sự kiện khi nhấp vào nút "Lưu" trong modal "Công Việc Mới"
+            $("#saveTaskButton").click(function () {
+                // Lấy dữ liệu từ các trường input trong form
+                var maDuAn = $("#MaDuAn").val();
+                var tenCongViec = $("#tenCongViec").val();
+                var moTa = $("#moTa").val();
+                var ngayHetHan = $("#ngayHetHan").val();
+                var trangThai = $("#TrangThai").val();
+
+                // Tạo đối tượng JSON chứa dữ liệu công việc
+                var congViecData = {
+                    MaDuAn: maDuAn,
+                    TenCongViec: tenCongViec,
+                    MoTa: moTa,
+                    NgayHetHan: ngayHetHan,
+                    TrangThai: trangThai
+                };
+
+                // Thực hiện yêu cầu AJAX để gửi dữ liệu công việc lên máy chủ
+                $.ajax({
+                    url: "/Home/CreateCongViec",
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify(congViecData),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        if (result.success) {
+                            // Cập nhật trang web để hiển thị thông tin công việc mới
+                            // Ví dụ: thêm công việc vào danh sách hiện tại
+                            // Đặt mã JavaScript ở đây để cập nhật giao diện người dùng
+
+                            // Đóng modal tạo công việc sau khi tạo thành công
+                            $("#createTaskModal").modal("hide");
+                        } else {
+                            alert(result.message); // Hiển thị thông báo lỗi
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert("Có lỗi xảy ra khi tạo công việc.");
+                    }
+                });
+
+                return false; // Ngăn chặn chuyển hướng trang mặc định của form
+            });
+        });
+    </script>
+
+
+}
