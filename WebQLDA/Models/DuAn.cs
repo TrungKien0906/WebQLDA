@@ -23,6 +23,6 @@ namespace WebQLDA.Models
         public string TrangThai { get; set; } // Đã sửa thành VARCHAR
 
         public List<CongViec> CongViec { get; set; } = new List<CongViec>();
-        public List<ThanhVienDuAn> ThanhVienDuAn { get; set; } = new List<ThanhVienDuAn>();
+      
     }
 }

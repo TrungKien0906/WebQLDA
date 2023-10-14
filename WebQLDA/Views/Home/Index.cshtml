@@ -5,6 +5,10 @@
 }
 
 <div class="text-center">
+    <div class="search-container">
+        <input type="text" id="searchProjectInput" class="search-input" placeholder="Tìm kiếm theo tên dự án...">
+        <button id="searchProjectButton" class="search-button">Tìm kiếm</button>
+    </div>
     <h1 class="display-4">MANAGER PROJECT</h1>
     <button id="createProjectButton" class="btn btn-primary">Tạo Dự Án</button>
     <button id="createTaskButton" class="btn btn-success">Tạo Công Việc</button>
@@ -16,7 +20,7 @@
                     <h4 class="modal-title">Tạo Dự Án Mới</h4>
                 </div>
                 <div class="modal-body">
-                    <form asp-action="CreateDuAn" method="post">
+                    <form id="createProjectForm" method="post">
                         <div class="form-group">
                             <label for="tenDuAn">Tên Dự Án:</label>
                             <input type="text" class="form-control" id="tenDuAn" name="tenDuAn" required>
@@ -34,13 +38,15 @@
 
                         <div class="form-group">
                             <label for="trangThai">Trạng Thái:</label>
-                            <input type="text" class="form-control" id="trangThai" name="TrangThai" maxlength="20" required>
-                           
+                            <select class="form-control" id="trangThai" name="trangThai" required>
+                                <option value="Đang Làm">Đang Làm</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                            </select>
                         </div>
 
 
                         <div class="text-center">
-                            <button id="createProjectSubmitButton" type="submit" class="btn btn-primary">Tạo Dự Án</button>
+                            <button type="submit" class="btn btn-primary" id="createProjectSubmitButton">Tạo Dự Án</button>
                         </div>
                     </form>
                 </div>
@@ -50,6 +56,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Modal cho Tạo Công Việc -->
     <div class="modal" id="createTaskModal">
@@ -88,18 +95,66 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="trangThai">Trạng Thái:</label>
-                            <input type="text" class="form-control" id="TrangThai" name="TrangThai" maxlength="10" required>
+                            <label for="TrangThai">Trạng Thái:</label>
+                            <select class="form-control" id="TrangThai" name="TrangThai" required>
+                                <option value="Đang Làm">Đang Làm</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                            </select>
                         </div>
 
+                        <div class="form-group">
+                            <label for="ghiChu">Ghi Chú:</label>
+                            <textarea class="form-control" id="ghiChu" name="ghiChu"></textarea>
+                        </div>
 
                         <button type="submit" class="btn btn-primary" id="saveTaskButton">Tạo Công Việc</button>
-
                     </form>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="closeTaskModalButton" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal cho Sửa Dự Án -->
+    <div class="modal" id="editProjectModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Sửa Dự Án</h4>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="EditDuAn" method="post">
+                        <div class="form-group">
+                            <label for="tenDuAn">Đổi Tên Dự Án:</label>
+                            <input type="text" class="form-control" id="tenDuAn" name="tenDuAn" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ngayBatDau">Ngày Bắt Đầu:</label>
+                            <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ngayKetThuc">Ngày Kết Thúc:</label>
+                            <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="trangThai">Trạng Thái:</label>
+                            <select class="form-control" id="trangThai" name="trangThai" required>
+                                <option value="Đang Làm">Đang Làm</option>
+                                <option value="Hoàn Thành">Hoàn Thành</option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" id="editProjectId" name="MaDuAn" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="closeEditProjectModalButton" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="editProjectSubmitButton">Lưu</button>
                 </div>
             </div>
         </div>
@@ -116,6 +171,7 @@
                     <th>Ngày Kết Thúc</th>
                     <th>Trạng Thái</th>
                     <th>Công Việc</th>
+                    <th>Thao Tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -132,13 +188,16 @@
                                 <a href="@Url.Action("DanhSachCongViec", "Home", new { id = DuAn.MaDuAn })" class="btn btn-primary">Xem Công Việc</a>
                             }
                         </td>
+                        <td>
+                            <a href="#" class="btn btn-success edit-project" data-id="@DuAn.MaDuAn">Sửa</a>
+                            <a href="#" class="btn btn-danger delete-project" data-id="@DuAn.MaDuAn">Xóa</a>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
-
 @section scripts {
     <script>
         $(document).ready(function () {
@@ -156,6 +215,11 @@
                 var ngayKetThuc = $("#ngayKetThuc").val();
                 var trangThai = $("#trangThai").val();
 
+                // Kiểm tra ràng buộc ngày kết thúc phải sau ngày bắt đầu
+                if (new Date(ngayKetThuc) <= new Date(ngayBatDau)) {
+                    alert("Ngày kết thúc phải sau ngày bắt đầu.");
+                    return false; // Ngăn chặn việc gửi dữ liệu nếu điều kiện không được đáp ứng
+                }
                 // Tạo đối tượng JSON chứa dữ liệu dự án
                 var duAnData = {
                     TenDuAn: tenDuAn,
@@ -187,8 +251,6 @@
                 return false;
             });
 
-
-
             // Xử lý sự kiện khi nhấp vào nút "Đóng" trong modal "Tạo Dự Án"
             $("#closeProjectModalButton").click(function () {
                 $("#createProjectModal").modal("hide"); // Đóng modal tạo dự án
@@ -204,6 +266,136 @@
                 $("#createTaskModal").modal("hide"); // Đóng modal tạo công việc
             });
 
+            $("#searchProjectButton").click(function () {
+                var searchTerm = $("#searchProjectInput").val().toLowerCase();
+
+                // Lặp qua từng dòng trong bảng danh sách dự án
+                $("table tbody tr").each(function () {
+                    var projectName = $(this).find("td:first").text().toLowerCase();
+                    if (projectName.includes(searchTerm)) {
+                        // Hiển thị dự án nếu tên dự án chứa từ khóa tìm kiếm
+                        $(this).show();
+                    } else {
+                        // Ẩn dự án nếu tên dự án không chứa từ khóa tìm kiếm
+                        $(this).hide();
+                    }
+                });
+            });
+
+            // Xử lý sự kiện khi nhấp vào nút "Xóa"
+            $(".delete-project").click(function () {
+                var projectId = $(this).data("id");
+                if (confirm("Bạn có chắc chắn muốn xóa dự án này?")) {
+                    // Thực hiện yêu cầu AJAX để xóa dự án
+                    $.ajax({
+                        url: "/Home/DeleteDuAn?id=" + projectId,
+                        type: "POST",
+                        dataType: "json",
+                        success: function (result) {
+                            if (result.success) {
+                                // Xóa dự án khỏi danh sách trên trang web
+                                $(this).closest("tr").remove();
+                                alert("Dự án đã được xóa thành công.");
+                            } else {
+                                alert(result.message); // Hiển thị thông báo lỗi
+                            }
+                        }.bind(this), // Gắn lại ngữ cảnh của "this"
+                        error: function (error) {
+                            console.error(error);
+                            alert("Có lỗi xảy ra khi xóa dự án.");
+                        }
+                    });
+                }
+            });
+
+            // Xử lý sự kiện khi nhấp vào nút "Lưu" trong modal "Sửa Dự Án"
+            $("#editProjectSubmitButton").click(function () {
+                // Lấy projectId từ thuộc tính data-id của nút "Lưu"
+                var projectId = $(this).attr("data-id");
+                // Lấy dữ liệu từ các trường input trong form
+                var tenDuAn = $("#editProjectModal #tenDuAn").val();
+                var ngayBatDau = $("#editProjectModal #ngayBatDau").val();
+                var ngayKetThuc = $("#editProjectModal #ngayKetThuc").val();
+                var trangThai = $("#editProjectModal #trangThai").val();
+
+                // Kiểm tra ràng buộc ngày kết thúc phải sau ngày bắt đầu
+                if (new Date(ngayKetThuc) <= new Date(ngayBatDau)) {
+                    alert("Ngày kết thúc phải sau ngày bắt đầu.");
+                    return false; // Ngăn chặn việc gửi dữ liệu nếu điều kiện không được đáp ứng
+                }
+
+                // Tạo đối tượng JSON chứa dữ liệu dự án
+                var duAnData = {
+                    MaDuAn: projectId, // projectId để xác định dự án cần sửa
+                    TenDuAn: tenDuAn,
+                    NgayBatDau: ngayBatDau,
+                    NgayKetThuc: ngayKetThuc,
+                    TrangThai: trangThai
+                };
+
+                // Thực hiện yêu cầu AJAX POST lên máy chủ
+                $.ajax({
+                    url: "/Home/EditDuAn",
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify(duAnData),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        if (result.success) {
+                            // Đóng modal sửa dự án sau khi sửa thành công
+                            $("#editProjectModal").modal("hide");
+                            // Cập nhật thông tin dự án trên trang web
+                            // Ví dụ: cập nhật dự án trong bảng dự án
+                            var row = $("table tbody tr[data-id='" + projectId + "']");
+                            row.find("td:eq(0)").text(tenDuAn);
+                            row.find("td:eq(1)").text(ngayBatDau);
+                            row.find("td:eq(2)").text(ngayKetThuc);
+                            row.find("td:eq(3)").text(trangThai);
+                        } else {
+                            alert(result.message); // Hiển thị thông báo lỗi
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert("Có lỗi xảy ra khi cập nhật dự án.");
+                    }
+                });
+            });
+
+            // Xử lý sự kiện khi nhấp vào nút "Đóng" trong modal "Sửa Dự Án"
+            $("#closeEditProjectModalButton").click(function () {
+                $("#editProjectModal").modal("hide"); // Đóng modal sửa dự án
+            });
+
+            $(".edit-project").click(function () {
+                var projectId = $(this).attr("data-id"); // Sử dụng .attr("data-id") thay vì .data("id")
+                // Hiển thị modal sửa dự án và tải dữ liệu dự án cần sửa
+                $("#editProjectModal").modal("show");
+                // Tạo yêu cầu AJAX để tải dữ liệu dự án theo projectId và điền vào modal
+                $.ajax({
+                    url: "/Home/GetDuAn?id=" + projectId,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.success) {
+                            // Điền dữ liệu dự án vào modal
+                            $("#editProjectModal #tenDuAn").val(result.data.TenDuAn);
+                            $("#editProjectModal #ngayBatDau").val(result.data.NgayBatDau);
+                            $("#editProjectModal #ngayKetThuc").val(result.data.NgayKetThuc);
+                            $("#editProjectModal #trangThai").val(result.data.TrangThai);
+                            // Gán projectId cho nút "Lưu" trong modal
+                            $("#editProjectModal #editProjectSubmitButton").attr("data-id", projectId);
+                        } else {
+                            alert(result.message); // Hiển thị thông báo lỗi
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert("Có lỗi xảy ra khi tải dữ liệu dự án.");
+                    }
+                });
+            });
+
             // Xử lý sự kiện khi nhấp vào nút "Lưu" trong modal "Công Việc Mới"
             $("#saveTaskButton").click(function () {
                 // Lấy dữ liệu từ các trường input trong form
@@ -212,6 +404,7 @@
                 var moTa = $("#moTa").val();
                 var ngayHetHan = $("#ngayHetHan").val();
                 var trangThai = $("#TrangThai").val();
+                var ghiChu = $("#ghiChu").val(); // Thêm dòng này để lấy dữ liệu ghi chú
 
                 // Tạo đối tượng JSON chứa dữ liệu công việc
                 var congViecData = {
@@ -219,7 +412,8 @@
                     TenCongViec: tenCongViec,
                     MoTa: moTa,
                     NgayHetHan: ngayHetHan,
-                    TrangThai: trangThai
+                    TrangThai: trangThai,
+                    GhiChu: ghiChu // Thêm dòng này để đưa dữ liệu ghi chú vào đối tượng JSON
                 };
 
                 // Thực hiện yêu cầu AJAX để gửi dữ liệu công việc lên máy chủ
@@ -231,11 +425,6 @@
                     contentType: "application/json; charset=utf-8",
                     success: function (result) {
                         if (result.success) {
-                            // Cập nhật trang web để hiển thị thông tin công việc mới
-                            // Ví dụ: thêm công việc vào danh sách hiện tại
-                            // Đặt mã JavaScript ở đây để cập nhật giao diện người dùng
-
-                            // Đóng modal tạo công việc sau khi tạo thành công
                             $("#createTaskModal").modal("hide");
                         } else {
                             alert(result.message); // Hiển thị thông báo lỗi
@@ -246,8 +435,7 @@
                         alert("Có lỗi xảy ra khi tạo công việc.");
                     }
                 });
-
-                return false; // Ngăn chặn chuyển hướng trang mặc định của form
+                return false;
             });
         });
     </script>
