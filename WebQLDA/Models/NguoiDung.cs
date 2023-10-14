@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebQLDA.Models
 {
-    public class NguoiDung
+    public class NguoiDung 
     {
         [Key]
-        [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdNguoiDung { get; set; }
 
         [Required]
@@ -23,7 +25,9 @@ namespace WebQLDA.Models
 
         [Required]
         public string MatKhau { get; set; }
+   
 
-        public List<ThanhVienDuAn> ThanhVienDuAn { get; set; }
+
+
     }
 }

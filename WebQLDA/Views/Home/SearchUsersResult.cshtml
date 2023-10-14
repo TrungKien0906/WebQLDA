@@ -1,0 +1,9 @@
+﻿@model List<NguoiDung>
+
+<h1>Kết quả tìm kiếm người dùng</h1>
+<ul>
+    @foreach (var nguoidung in Model)
+    {
+        <li>@nguoidung.TaiKhoan</li> <!-- Thay thế bằng các thuộc tính phù hợp -->
+    }
+</ul>

@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -15,4 +15,74 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+/* CSS tùy chỉnh cho ô tìm kiếm */
+/* CSS cho ô tìm kiếm */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    flex-grow: 1;
+}
+
+.search-button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+    /* Hover effect cho nút tìm kiếm */
+    .search-button:hover {
+        background-color: #0056b3;
+    }
+/* Định dạng bảng công việc chi tiết */
+#registerForm {
+    display: none;
+}
+/* Thiết lập kiểu cho nút */
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Thiết lập kiểu cho biểu tượng sắp xếp */
+.sort-icon {
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+/* Tạo hiệu ứng hover cho nút */
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    flex-grow: 1;
 }

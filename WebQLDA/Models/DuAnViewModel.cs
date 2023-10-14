@@ -19,6 +19,7 @@ namespace WebQLDA.Models
         [Required]
         public string TrangThai { get; set; }
 
-        // Các thuộc tính khác nếu cần
+      
+       
     }
 }

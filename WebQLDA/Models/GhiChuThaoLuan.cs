@@ -22,5 +22,6 @@ namespace WebQLDA.Models
 
         [Key]
         public int GhiChuThaoLuanId { get; set; } // Thêm khóa chính
+
     }
 }
