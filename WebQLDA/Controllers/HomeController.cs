@@ -196,6 +196,16 @@ namespace WebQLDA.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Lấy ngày kết thúc của dự án
+                var ngayKetThucDuAn = _context.DuAn.FirstOrDefault(d => d.MaDuAn == congViecViewModel.MaDuAn)?.NgayKetThuc;
+
+                // Kiểm tra ngày kết thúc công việc
+                if (congViecViewModel.NgayHetHan > ngayKetThucDuAn)
+                {
+                    // Trả về thông báo lỗi nếu ngày kết thúc công việc không hợp lệ
+                    return Json(new { success = false, message = "Ngày kết thúc công việc phải trước ngày kết thúc của dự án." });
+                }
+
                 // Chuyển đổi CongViecViewModel thành đối tượng CongViec và thêm vào cơ sở dữ liệu
                 var congViec = new CongViec
                 {
@@ -205,7 +215,6 @@ namespace WebQLDA.Controllers
                     NgayHetHan = congViecViewModel.NgayHetHan,
                     TrangThai = congViecViewModel.TrangThai,
                     GhiChu = congViecViewModel.GhiChu
-       
                 };
 
                 _context.CongViec.Add(congViec);
@@ -218,18 +227,28 @@ namespace WebQLDA.Controllers
             // Trả về lỗi nếu có lỗi xảy ra
             return Json(new { success = false, message = "Có lỗi xảy ra khi tạo công việc." });
         }
-     
+
+
 
         [HttpPost]
         public async Task<IActionResult> EditCongViec([FromBody] CongViec congViecData)
         {
             try
             {
-                // Lấy công việc từ cơ sở dữ liệu dựa trên maCongViec
+                // Lấy công việc từ cơ sở dữ liệu dựa trên `MaCongViec`
                 var congViec = await _context.CongViec.FindAsync(congViecData.MaCongViec);
                 if (congViec == null)
                 {
                     return Json(new { success = false, message = "Công việc không tồn tại." });
+                }
+
+                // Lấy ngày kết thúc của dự án liên quan tới công việc
+                var ngayKetThucDuAn = _context.DuAn.FirstOrDefault(d => d.MaDuAn == congViec.MaDuAn)?.NgayKetThuc;
+
+                // Kiểm tra ngày kết thúc công việc
+                if (congViecData.NgayHetHan > ngayKetThucDuAn)
+                {
+                    return Json(new { success = false, message = "Ngày kết thúc công việc phải trước ngày kết thúc của dự án." });
                 }
 
                 // Cập nhật thông tin công việc với dữ liệu mới
@@ -253,7 +272,8 @@ namespace WebQLDA.Controllers
             }
         }
 
-  
+
+
 
         [HttpPost]
         public async Task<IActionResult> DeleteCongViec(int id)

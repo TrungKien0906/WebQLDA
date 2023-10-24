@@ -1,12 +1,12 @@
-﻿    @model List<WebQLDA.Models.CongViec>
+﻿@model List<WebQLDA.Models.CongViec>
 
-    @{
-        ViewData["Title"] = "Danh sách công việc";
-    }
-    <div class="text-center">
-        <h1 class="display-4">Danh sách công việc</h1>
+@{
+    ViewData["Title"] = "Danh sách công việc";
+}
+<div class="text-center">
+    <h1 class="display-4">Danh sách công việc</h1>
     <input type="text" id="searchInput" placeholder="Tìm tên, ngày, ghi chú...">
-    </div>
+</div>
 <button id="sortByName" class="btn btn-primary">
     <span class="sort-icon">▲</span> Sắp xếp theo Tên Công Việc
 </button>
@@ -24,307 +24,308 @@
 </div>
 
 
-    <div id="congViecDetails" style="display: none;">
-        <h2>Thông tin chi tiết công việc</h2>
-        <p><strong>Tên Công Việc:</strong> <span id="congViecTen"></span></p>
-        <p><strong>Mô Tả:</strong> <span id="congViecMoTa"></span></p>
-        <p><strong>Ngày Hết Hạn:</strong> <span id="congViecNgayHetHan"></span></p>
-        <p><strong>Trạng Thái:</strong> <span id="congViecTrangThai"></span></p>
-        <p><strong>Ghi Chú:</strong> <span id="congViecGhiChu"></span></p>
-        <!-- Thêm trường Ghi Chú -->
- 
-        <button id="closeCongViecDetails" class="btn btn-danger">Đóng</button>
-    </div>
+<div id="congViecDetails" style="display: none;">
+    <h2>Thông tin chi tiết công việc</h2>
+    <p><strong>Tên Công Việc:</strong> <span id="congViecTen"></span></p>
+    <p><strong>Mô Tả:</strong> <span id="congViecMoTa"></span></p>
+    <p><strong>Ngày Hết Hạn:</strong> <span id="congViecNgayHetHan"></span></p>
+    <p><strong>Trạng Thái:</strong> <span id="congViecTrangThai"></span></p>
+    <p><strong>Ghi Chú:</strong> <span id="congViecGhiChu"></span></p>
+    <!-- Thêm trường Ghi Chú -->
+
+    <button id="closeCongViecDetails" class="btn btn-danger">Đóng</button>
+</div>
 
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Tên Công Việc</th>
-                            <th>Mô Tả</th>
-                            <th>Ngày Hết Hạn</th>
-                            <th>Trạng Thái</th>
-                            <th>Dự Án</th>
-                            <th>Ghi Chú</th>
-                            <th>Thao Tác</th>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tên Công Việc</th>
+                        <th>Mô Tả</th>
+                        <th>Ngày Hết Hạn</th>
+                        <th>Trạng Thái</th>
+                        <th>Dự Án</th>
+                        <th>Ghi Chú</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var congViec in Model)
+                    {
+                        <tr data-id="@congViec.MaCongViec">
+                            <td>@congViec.TenCongViec</td>
+                            <td>@congViec.MoTa</td>
+                            <td>@congViec.NgayHetHan.ToShortDateString()</td>
+                            <td>@congViec.TrangThai</td>
+                            <td>
+                                @if (congViec.DuAn != null)
+                                {
+                                    @congViec.DuAn.TenDuAn
+                                }
+                                else
+                                {
+                                    <span class="text-danger">Không có dự án liên kết</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(congViec.GhiChu))
+                                {
+                                    @congViec.GhiChu
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Không có ghi chú</span>
+                                }
+                            </td>
+                            <td>
+                                <button class="btn btn-success edit-cong-viec" data-id="@congViec.MaCongViec">Sửa</button>
+                                <button class="btn btn-danger delete-cong-viec" data-id="@congViec.MaCongViec">Xóa</button>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var congViec in Model)
-                        {
-                            <tr data-id="@congViec.MaCongViec">
-                                <td>@congViec.TenCongViec</td>
-                                <td>@congViec.MoTa</td>
-                                <td>@congViec.NgayHetHan.ToShortDateString()</td>
-                                <td>@congViec.TrangThai</td>
-                                <td>
-                                    @if (congViec.DuAn != null)
-                                    {
-                                        @congViec.DuAn.TenDuAn
-                                    }
-                                    else
-                                    {
-                                        <span class="text-danger">Không có dự án liên kết</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(congViec.GhiChu))
-                                    {
-                                        @congViec.GhiChu
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">Không có ghi chú</span>
-                                    }
-                                </td>
-                                <td>
-                                    <button class="btn btn-success edit-cong-viec" data-id="@congViec.MaCongViec">Sửa</button>
-                                    <button class="btn btn-danger delete-cong-viec" data-id="@congViec.MaCongViec">Xóa</button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal cho Sửa Công Việc -->
+<div class="modal fade" id="editCongViecModal" tabindex="-1" role="dialog" aria-labelledby="editCongViecModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="editCongViecModalLabel">Sửa Công Việc</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editCongViecForm">
+                    <input type="hidden" id="congViecId" name="congViecId" />
+                    <div class="form-group">
+                        <label for="tenCongViec">Sửa Tên Công Việc:</label>
+                        <input type="text" class="form-control" id="tenCongViec" name="tenCongViec" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="moTa">Mô Tả:</label>
+                        <textarea class="form-control" id="moTa" name="moTa"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ngayHetHan">Ngày Hết Hạn:</label>
+                        <input type="date" class="form-control" id="ngayHetHan" name="ngayHetHan" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="TrangThai">Trạng Thái:</label>
+                        <select class="form-control" id="editTrangThai" name="TrangThai" required>
+                            <option value="Đang Làm">Đang Làm</option>
+                            <option value="Hoàn Thành">Hoàn Thành</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ghiChu">Ghi chú:</label>
+                        <input type="text" class="form-control" id="ghiChu" name="ghiChu" required>
+                    </div>
+                    <!-- Thêm các trường dữ liệu khác của công việc nếu cần -->
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="cancelEditCongViecButton" data-dismiss=" modal">Hủy</button>
+                        <button type="button" class="btn btn-primary" id="editCongViecSubmitButton">Lưu</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal cho Sửa Công Việc -->
-    <div class="modal fade" id="editCongViecModal" tabindex="-1" role="dialog" aria-labelledby="editCongViecModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="editCongViecModalLabel">Sửa Công Việc</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="editCongViecForm">
-                        <input type="hidden" id="congViecId" name="congViecId" />
-                        <div class="form-group">
-                            <label for="tenCongViec">Sửa Tên Công Việc:</label>
-                            <input type="text" class="form-control" id="tenCongViec" name="tenCongViec" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="moTa">Mô Tả:</label>
-                            <textarea class="form-control" id="moTa" name="moTa"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="ngayHetHan">Ngày Hết Hạn:</label>
-                            <input type="date" class="form-control" id="ngayHetHan" name="ngayHetHan" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="TrangThai">Trạng Thái:</label>
-                            <select class="form-control" id="editTrangThai" name="TrangThai" required>
-                                <option value="Đang Làm">Đang Làm</option>
-                                <option value="Hoàn Thành">Hoàn Thành</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="ghiChu">Ghi chú:</label>
-                            <input type="text" class="form-control" id="ghiChu" name="ghiChu" required>
-                        </div>
-                        <!-- Thêm các trường dữ liệu khác của công việc nếu cần -->
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" id="cancelEditCongViecButton" data-dismiss=" modal">Hủy</button>
-                            <button type="button" class="btn btn-primary" id="editCongViecSubmitButton">Lưu</button>
-                        </div>
-                    </form>
-                </div>
+<!-- Modal cho Xóa Công Việc -->
+<div class="modal fade" id="deleteCongViecModal" tabindex="-1" role="dialog" aria-labelledby="deleteCongViecModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="deleteCongViecModalLabel">Xóa Công Việc</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa công việc này?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="deleteCongViecButton">Xóa</button>
             </div>
         </div>
     </div>
-
-    <!-- Modal cho Xóa Công Việc -->
-    <div class="modal fade" id="deleteCongViecModal" tabindex="-1" role="dialog" aria-labelledby="deleteCongViecModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="deleteCongViecModalLabel">Xóa Công Việc</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Bạn có chắc chắn muốn xóa công việc này?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="deleteCongViecButton">Xóa</button>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 
 <canvas id="congViecStatusChart"></canvas>
 
-    <div class="text-center">
-        <a href="@Url.Action("TaoBaoCao", "Home")" class="btn btn-primary">Tạo Báo Cáo</a>
-        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Quay về Dự Án</a>
-        <br />
-        <br />
-        <br />
+<div class="text-center">
+    <a href="@Url.Action("TaoBaoCao", "Home")" class="btn btn-primary">Tạo Báo Cáo</a>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Quay về Dự Án</a>
     <br />
-    </div>
+    <br />
+    <br />
+    <br />
+</div>
 
-    @section scripts {
-        <script>
-            $(document).ready(function () {
-                $(".edit-cong-viec").click(function () {
-                    var congViecId = $(this).attr("data-id"); // Lấy ID của công việc
-                
-                    $("#editCongViecModal").modal("show");
-                    // Tạo yêu cầu AJAX để tải dữ liệu công việc theo congViecId và điền vào modal
-                    $.ajax({
-                        url: "/Home/GetCongViec?id=" + congViecId,
-                        type: "GET",
-                        dataType: "json",
-                        success: function (result) {
-                            if (result.success) {
-                                // Điền dữ liệu công việc vào modal
-                                $("#editCongViecModal #congViecId").val(result.data.MaCongViec);
-                                $("#editCongViecModal #tenCongViec").val(result.data.TenCongViec);
-                                $("#editCongViecModal #moTa").val(result.data.MoTa);
-                                $("#editCongViecModal #ngayHetHan").val(result.data.NgayHetHan);
-                                $("#editCongViecModal #editTrangThai").val(result.data.TrangThai);
-                                $("#editCongViecModal #ghiChu").val(result.data.GhiChu);
-                                // Gán congViecId cho nút "Lưu" trong modal
-                                $("#editCongViecModal #editCongViecSubmitButton").attr("data-id", congViecId);
-                            } else {
-                                alert(result.message); // Hiển thị thông báo lỗi
-                            }
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert("Có lỗi xảy ra khi tải dữ liệu công việc.");
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $(".edit-cong-viec").click(function () {
+                var congViecId = $(this).attr("data-id"); // Lấy ID của công việc
+
+                $("#editCongViecModal").modal("show");
+                // Tạo yêu cầu AJAX để tải dữ liệu công việc theo congViecId và điền vào modal
+                $.ajax({
+                    url: "/Home/GetCongViec?id=" + congViecId,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.success) {
+                            // Điền dữ liệu công việc vào modal
+                            $("#editCongViecModal #congViecId").val(result.data.MaCongViec);
+                            $("#editCongViecModal #tenCongViec").val(result.data.TenCongViec);
+                            $("#editCongViecModal #moTa").val(result.data.MoTa);
+                            $("#editCongViecModal #ngayHetHan").val(result.data.NgayHetHan);
+                            $("#editCongViecModal #editTrangThai").val(result.data.TrangThai);
+                            $("#editCongViecModal #ghiChu").val(result.data.GhiChu);
+                            // Gán congViecId cho nút "Lưu" trong modal
+                            $("#editCongViecModal #editCongViecSubmitButton").attr("data-id", congViecId);
+                        } else {
+                            alert(result.message); // Hiển thị thông báo lỗi
                         }
-                    });
-                });
-
-                $("#cancelEditCongViecButton").click(function () {
-        // Đóng modal sửa công việc
-        $("#editCongViecModal").modal("hide");
-        // Đặt lại các giá trị trong modal (nếu cần)
-        $("#congViecId").val("");
-        $("#tenCongViec").val("");
-        $("#moTa").val("");
-        $("#ngayHetHan").val("");
-        $("#trangThai").val("");
-         ("#ghiChu").val("");
-        // Thêm bất kỳ xử lý khác bạn muốn thực hiện khi nhấn nút "Hủy"
-    });
- 
-                // Xử lý sự kiện khi nhấp vào nút "Lưu" trong modal "Sửa Công Việc"
-           
-                $("#editCongViecSubmitButton").click(function () {
-                    var congViecId = $(this).attr("data-id"); // Lấy congViecId từ thuộc tính data-id của nút "Lưu"
-                    var tenCongViec = $("#editCongViecModal #tenCongViec").val();
-                    var moTa = $("#editCongViecModal #moTa").val();
-                    var ngayHetHan = $("#editCongViecModal #ngayHetHan").val();
-                var trangThai = $("#editCongViecModal #editTrangThai").val();
-                    var ghiChu = $("#editCongViecModal #ghiChu").val();
-
-                    // Tạo đối tượng JSON chứa dữ liệu công việc
-                    var congViecData = {
-                        MaCongViec: congViecId,
-                        TenCongViec: tenCongViec,
-                        MoTa: moTa,
-                        NgayHetHan: ngayHetHan,
-                        TrangThai: trangThai,
-                        GhiChu : ghiChu
-                    };
-
-                    // Thực hiện yêu cầu AJAX POST để cập nhật công việc lên máy chủ
-                    $.ajax({
-                        url: "/Home/EditCongViec",
-                        type: "POST",
-                        dataType: "json",
-                        data: JSON.stringify(congViecData),
-                        contentType: "application/json; charset=utf-8",
-                        success: function (result) {
-                            if (result.success) {
-                                // Đóng modal sửa công việc sau khi sửa thành công
-                                $("#editCongViecModal").modal("hide");
-                                // Cập nhật trang web để hiển thị thông tin công việc đã sửa
-                                // Ví dụ: Cập nhật dữ liệu trong bảng hiển thị danh sách công việc
-                                alert(result.message);
-                            } else {
-                                alert(result.message); // Hiển thị thông báo lỗi
-                            }
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            alert("Có lỗi xảy ra khi cập nhật công việc.");
-                        }
-                    });
-                });
-
-
-                // Xử lý sự kiện khi nhấp vào nút "Xóa" cho công việc
-                $(".delete-cong-viec").click(function () {
-                    var congViecId = $(this).data("id");
-                    if (confirm("Bạn có chắc chắn muốn xóa công việc này?")) {
-                        // Thực hiện yêu cầu AJAX để xóa công việc
-                        $.ajax({
-                            url: `/Home/DeleteCongViec?id=${congViecId}`,
-                            type: "POST",
-                            dataType: "json",
-                            success: function (result) {
-                                if (result.success) {
-                                    // Xóa công việc khỏi danh sách trên trang web
-                                    $("table tbody tr[data-id='" + congViecId + "']").remove();
-                                    alert("Công việc đã được xóa thành công.");
-                                } else {
-                                    alert(result.message); // Hiển thị thông báo lỗi
-                                }
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                alert("Có lỗi xảy ra khi xóa công việc.");
-                            }
-                        });
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert("Có lỗi xảy ra khi tải dữ liệu công việc.");
                     }
                 });
-                //mở bảng chi tiết công việc
-                $("table tbody tr").click(function () {
-                    // Lấy thông tin chi tiết công việc từ các thẻ HTML trong hàng được nhấp
-                    var tenCongViec = $(this).find("td:eq(0)").text();
-                    var moTa = $(this).find("td:eq(1)").text();
-                    var ngayHetHan = $(this).find("td:eq(2)").text();
-                    var trangThai = $(this).find("td:eq(3)").text();
-                    var ghiChu = $(this).find("td:eq(5)").text();
+            });
 
-                    // Hiển thị thông tin chi tiết công việc trong vùng thông tin chi tiết
-                    $("#congViecTen").text(tenCongViec);
-                    $("#congViecMoTa").text(moTa);
-                    $("#congViecNgayHetHan").text(ngayHetHan);
-                    $("#congViecTrangThai").text(trangThai);
-                    $("#congViecGhiChu").text(ghiChu);
-                    // Hiển thị vùng thông tin chi tiết công việc và ẩn đi các vùng thông tin khác
-                    $("#congViecDetails").show();
-                });
-                //đóng bảng chi tiết công việc
-                $("#closeCongViecDetails").click(function () {
-                    // Ẩn bảng công việc chi tiết
-                    $("#congViecDetails").hide();
-                });
+            $("#cancelEditCongViecButton").click(function () {
+                // Đóng modal sửa công việc
+                $("#editCongViecModal").modal("hide");
+                // Đặt lại các giá trị trong modal (nếu cần)
+                $("#congViecId").val("");
+                $("#tenCongViec").val("");
+                $("#moTa").val("");
+                $("#ngayHetHan").val("");
+                $("#trangThai").val("");
+                ("#ghiChu").val("");
+                // Thêm bất kỳ xử lý khác bạn muốn thực hiện khi nhấn nút "Hủy"
+            });
 
-               
+            // Xử lý sự kiện khi nhấp vào nút "Lưu" trong modal "Sửa Công Việc"
+
+            $("#editCongViecSubmitButton").click(function () {
+                var congViecId = $(this).attr("data-id"); // Lấy congViecId từ thuộc tính data-id của nút "Lưu"
+                var tenCongViec = $("#editCongViecModal #tenCongViec").val();
+                var moTa = $("#editCongViecModal #moTa").val();
+                var ngayHetHan = $("#editCongViecModal #ngayHetHan").val();
+                var trangThai = $("#editCongViecModal #editTrangThai").val();
+                var ghiChu = $("#editCongViecModal #ghiChu").val();
+
+                // Tạo đối tượng JSON chứa dữ liệu công việc
+                var congViecData = {
+                    MaCongViec: congViecId,
+                    TenCongViec: tenCongViec,
+                    MoTa: moTa,
+                    NgayHetHan: ngayHetHan,
+                    TrangThai: trangThai,
+                    GhiChu: ghiChu
+                };
+
+
+                // Thực hiện yêu cầu AJAX POST để cập nhật công việc lên máy chủ
+                $.ajax({
+                    url: "/Home/EditCongViec",
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify(congViecData),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        if (result.success) {
+                            // Đóng modal sửa công việc sau khi sửa thành công
+                            $("#editCongViecModal").modal("hide");
+                            // Cập nhật trang web để hiển thị thông tin công việc đã sửa
+                            // Ví dụ: Cập nhật dữ liệu trong bảng hiển thị danh sách công việc
+                            alert(result.message);
+                        } else {
+                            alert(result.message); // Hiển thị thông báo lỗi
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                        alert("Có lỗi xảy ra khi cập nhật công việc.");
+                    }
+                });
+            });
+
+
+            // Xử lý sự kiện khi nhấp vào nút "Xóa" cho công việc
+            $(".delete-cong-viec").click(function () {
+                var congViecId = $(this).data("id");
+                if (confirm("Bạn có chắc chắn muốn xóa công việc này?")) {
+                    // Thực hiện yêu cầu AJAX để xóa công việc
+                    $.ajax({
+                        url: `/Home/DeleteCongViec?id=${congViecId}`,
+                        type: "POST",
+                        dataType: "json",
+                        success: function (result) {
+                            if (result.success) {
+                                // Xóa công việc khỏi danh sách trên trang web
+                                $("table tbody tr[data-id='" + congViecId + "']").remove();
+                                alert("Công việc đã được xóa thành công.");
+                            } else {
+                                alert(result.message); // Hiển thị thông báo lỗi
+                            }
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            alert("Có lỗi xảy ra khi xóa công việc.");
+                        }
+                    });
+                }
+            });
+            //mở bảng chi tiết công việc
+            $("table tbody tr").click(function () {
+                // Lấy thông tin chi tiết công việc từ các thẻ HTML trong hàng được nhấp
+                var tenCongViec = $(this).find("td:eq(0)").text();
+                var moTa = $(this).find("td:eq(1)").text();
+                var ngayHetHan = $(this).find("td:eq(2)").text();
+                var trangThai = $(this).find("td:eq(3)").text();
+                var ghiChu = $(this).find("td:eq(5)").text();
+
+                // Hiển thị thông tin chi tiết công việc trong vùng thông tin chi tiết
+                $("#congViecTen").text(tenCongViec);
+                $("#congViecMoTa").text(moTa);
+                $("#congViecNgayHetHan").text(ngayHetHan);
+                $("#congViecTrangThai").text(trangThai);
+                $("#congViecGhiChu").text(ghiChu);
+                // Hiển thị vùng thông tin chi tiết công việc và ẩn đi các vùng thông tin khác
+                $("#congViecDetails").show();
+            });
+            //đóng bảng chi tiết công việc
+            $("#closeCongViecDetails").click(function () {
+                // Ẩn bảng công việc chi tiết
+                $("#congViecDetails").hide();
+            });
+
+
 
 
 
 
         });
-         </script>
-         <script>
+    </script>
+    <script>
         // Chờ cho trang web được tải xong
         document.addEventListener("DOMContentLoaded", function () {
             // Lấy thẻ liên kết hoặc nút "Tạo Báo Cáo" bằng ID
@@ -376,7 +377,7 @@
         });
     </script>
     <!-- Thêm sắp xếp mặc định ban đầu -->
-         <script>
+    <script>
         var currentSort = ""; // Biến lưu trạng thái sắp xếp hiện tại
 
         $(document).ready(function () {
@@ -413,7 +414,7 @@
             });
         }
     </script>
-         <script>
+    <script>
         $(document).ready(function () {
             $("#searchInput").on("keyup", function () {
                 var searchText = $(this).val().toLowerCase();
@@ -430,38 +431,60 @@
             var ctx = document.getElementById('congViecStatusChart').getContext('2d');
 
             // Truy xuất và tính toán dữ liệu cho biểu đồ
-            var soLuongCongViecDangLam = @Model.Count(congViec => congViec.TrangThai == "Đang Làm");
-            var soLuongCongViecHoanThanh = @Model.Count(congViec => congViec.TrangThai == "Hoàn Thành");
-
+            var labels = @Html.Raw(Json.Serialize(Model.Select(congViec => congViec.TenCongViec).ToList()));
+            var deadlines = @Html.Raw(Json.Serialize(Model.Select(congViec => congViec.NgayHetHan).ToList()));
             var data = {
-                labels: ['Đang làm', 'Hoàn thành'],
-                datasets: [{
-                    label: 'Tình trạng công việc',
-                    data: [soLuongCongViecDangLam, soLuongCongViecHoanThanh],
-                    backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)'], // Màu nền cho cột
-                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(54, 162, 235, 1)'], // Màu đường biểu đồ
-                    borderWidth: 1
-                }]
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Đang làm',
+                        data: @Html.Raw(Json.Serialize(Model.Select(congViec => congViec.TrangThai == "Đang Làm" ? 1 : 0).ToList())),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Hoàn thành',
+                        data: @Html.Raw(Json.Serialize(Model.Select(congViec => congViec.TrangThai == "Hoàn Thành" ? 1 : 0).ToList())),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }
+                ]
             };
 
             var options = {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
+                        stacked: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function (context) {
+                                return data.labels[context[0].dataIndex]; // Tên công việc
+                            },
+                            label: function (context) {
+                                var deadline = new Date(deadlines[context.dataIndex]);
+                                return 'Ngày hết hạn: ' + deadline.toLocaleDateString(); // Ngày hết hạn
+                            }
                         }
                     }
                 }
             };
 
             var myChart = new Chart(ctx, {
-                type: 'bar', // Loại biểu đồ cột
+                type: 'bar',
                 data: data,
                 options: options
             });
         });
+
     </script>
+    </script>
+
     <script>
         $(document).ready(function () {
             $("#searchUserButton").click(searchForUser);
@@ -495,7 +518,7 @@
                     var listItem = $("<li class='list-group-item'></li>").text(taiKhoan + " - " + nguoidung.Ten);
 
                     listItem.click(function () {
-                     
+
                     });
 
                     resultsList.append(listItem);
@@ -506,6 +529,5 @@
 
     </script>
 
-  
-    }
 
+    }
